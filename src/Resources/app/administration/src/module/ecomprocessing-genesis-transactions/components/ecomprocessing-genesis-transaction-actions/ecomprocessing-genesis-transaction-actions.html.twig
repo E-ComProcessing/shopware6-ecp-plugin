@@ -1,0 +1,40 @@
+<div>
+    {% block ecomprocessing_genesis_transaction_actions_buttons_container %}
+    <sw-card-section secondary slim>
+        <sw-button size="small"
+                   :disabled="!isVoidAvailable"
+                   @click="showModal('void')">
+            {{ $tc('ecomprocessing-genesis-transactions.header-actions.void') }}
+        </sw-button>
+        <sw-button size="small"
+                   :disabled="!isCaptureAvailable"
+                   @click="showModal('capture')">
+            {{ $tc('ecomprocessing-genesis-transactions.header-actions.capture') }}
+        </sw-button>
+        <sw-button size="small"
+                   :disabled="!isRefundAvailable"
+                   @click="showModal('refund')">
+            {{ $tc('ecomprocessing-genesis-transactions.header-actions.refund') }}
+        </sw-button>
+    </sw-card-section>
+
+    <ecomprocessing-genesis-transaction-action-refund
+            v-if="modalType === 'refund'"
+            :actionTransaction="actionTransaction"
+            @modal-close="closeModal"
+            @executed-refund-event="referenceAction">
+    </ecomprocessing-genesis-transaction-action-refund>
+    <ecomprocessing-genesis-transaction-action-capture
+            v-if="modalType === 'capture'"
+            :actionTransaction="actionTransaction"
+            @modal-close="closeModal"
+            @executed-capture-event="referenceAction">
+    </ecomprocessing-genesis-transaction-action-capture>
+    <ecomprocessing-genesis-transaction-action-void
+            v-if="modalType === 'void'"
+            :actionTransaction="actionTransaction"
+            @modal-close="closeModal"
+            @executed-void-event="referenceAction">
+    </ecomprocessing-genesis-transaction-action-void>
+    {% endblock %}
+</div>

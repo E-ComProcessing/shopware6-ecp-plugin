@@ -1,0 +1,11 @@
+{% block sw_order_detail_content_tabs_general %}
+
+    {% parent %}
+
+    <sw-tabs-item v-if="isEcomprocessingPayment"
+                  :route="{ name: 'sw.order.ecomprocessing-genesis-transaction-details', params: { id: $route.params.id } }"
+                  :title="$tc('ecomprocessing-genesis-transactions.tab-title')">
+        {{ $tc('ecomprocessing-genesis-transactions.tab-title') }}
+    </sw-tabs-item>
+
+{% endblock %}
