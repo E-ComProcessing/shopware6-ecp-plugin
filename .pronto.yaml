@@ -1,5 +1,5 @@
 github:
-  slug: eMerchantPay/shopware6-ecp-plugin
+  slug:         eMerchantpay/shopware6-ecp-plugin
   access_token: ENV['PRONTO_GITHUB_ACCESS_TOKEN']
   api_endpoint: https://emp-sof-github01.emp.internal.com/api/v3
   web_endpoint: https://emp-sof-github01.emp.internal.com
