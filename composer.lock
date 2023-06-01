@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c295e3224ada02d43fcb19cdba677269",
+    "content-hash": "4764545a7bb3848a44ac2bd509daa4ea",
     "packages": [
         {
             "name": "genesisgateway/genesis_php",
-            "version": "1.21.2",
+            "version": "1.21.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/GenesisGateway/genesis_php.git",
-                "reference": "6fcdca45c7faac4c24c686b1b9e4e9b406dac0ad"
+                "reference": "80ad7e732a9aabcfd2c5f1f2b7a2f641b8711716"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GenesisGateway/genesis_php/zipball/6fcdca45c7faac4c24c686b1b9e4e9b406dac0ad",
-                "reference": "6fcdca45c7faac4c24c686b1b9e4e9b406dac0ad",
+                "url": "https://api.github.com/repos/GenesisGateway/genesis_php/zipball/80ad7e732a9aabcfd2c5f1f2b7a2f641b8711716",
+                "reference": "80ad7e732a9aabcfd2c5f1f2b7a2f641b8711716",
                 "shasum": ""
             },
             "require": {
@@ -25,14 +25,16 @@
                 "ext-curl": "*",
                 "ext-filter": "*",
                 "ext-hash": "*",
+                "ext-json": "*",
+                "ext-openssl": "*",
                 "ext-simplexml": "*",
                 "ext-xmlreader": "*",
                 "ext-xmlwriter": "*",
                 "php": ">=5.5.9"
             },
             "require-dev": {
-                "fzaninotto/faker": "1.*@stable",
-                "phpspec/phpspec": "3.4.*@stable"
+                "fakerphp/faker": "^1.20",
+                "phpspec/phpspec": "7.2.*@stable"
             },
             "type": "library",
             "autoload": {
@@ -154,7 +156,11 @@
                 "wechat",
                 "wpf"
             ],
-            "time": "2022-08-26T08:43:23+00:00"
+            "support": {
+                "issues": "https://github.com/GenesisGateway/genesis_php/issues",
+                "source": "https://github.com/GenesisGateway/genesis_php/tree/1.21.6"
+            },
+            "time": "2023-02-24T10:57:03+00:00"
         }
     ],
     "packages-dev": [
@@ -4453,5 +4459,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.3.0"
 }

@@ -2,6 +2,7 @@
 
 namespace spec\Genesis\Utils;
 
+use Genesis\API\Validators\Request\RegexValidator;
 use PhpSpec\ObjectBehavior;
 use Genesis\Exceptions\Exception;
 
@@ -83,9 +84,9 @@ class CommonSpec extends ObjectBehavior
             '\ArrayObject'
         );
 
-        $this::createArrayObject(array('key_example' => 'value_example'))->key_example->shouldBe(
-            'value_example'
-        );
+        $this->createArrayObject(array('key_example' => 'value_example'))->offsetGet(
+            'key_example'
+        )->shouldBe('value_example');
     }
 
     public function it_can_sanitize_null_array()
@@ -142,14 +143,26 @@ class CommonSpec extends ObjectBehavior
         );
     }
 
-    public function getMatchers()
+    public function it_should_return_false_with_non_regex()
+    {
+        $this::isRegexExpr('nonregex')->shouldBe(false);
+        $this::isRegexExpr(1234)->shouldBe(false);
+        $this::isRegexExpr('')->shouldBe(false);
+    }
+
+    public function it_should_return_true_with_regex()
+    {
+        $this::isRegexExpr(RegexValidator::PATTERN_CREDIT_CARD_NUMBER)->shouldBe(true);
+    }
+
+    public function getMatchers(): array
     {
         return array(
             'haveASizeOf' => function ($subject, $value) {
                 return (sizeof($subject) == $value);
             },
             'exist'       => function ($subject, $key) {
-                return array_key_exists($key, $subject);
+                return property_exists($subject, $key);
             },
         );
     }

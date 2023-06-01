@@ -1,7 +1,7 @@
 {
   "name": "ecomprocessing/genesis",
   "description": "ecomprocessing Genesis Plugin, that gives you the ability to process payments through E-Comprocessing's Payment Gateway - Genesis.",
-  "version": "1.1.2",
+  "version": "1.2.1",
   "type": "shopware-platform-plugin",
   "license": "MIT",
   "authors": [
@@ -32,7 +32,7 @@
     }
   },
   "require": {
-    "genesisgateway/genesis_php": "1.21.2"
+    "genesisgateway/genesis_php": "1.21.6"
   },
   "keywords": [
     "payment",

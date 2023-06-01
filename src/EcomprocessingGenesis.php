@@ -72,8 +72,8 @@ class EcomprocessingGenesis extends Plugin
         $checkoutPaymentData = [
             // payment handler will be selected by the identifier
             'handlerIdentifier' => CheckoutPayment::class,
-            'name' => 'E-Comprocessing Checkout',
-            'description' => 'E-Comprocessing Checkout uses the Genesis Web Payment Form for payments',
+            'name' => 'ecomprocessing Checkout',
+            'description' => 'ecomprocessing Checkout uses the Genesis Web Payment Form for payments',
             'pluginId' => $pluginId,
         ];
 

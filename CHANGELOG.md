@@ -1,5 +1,18 @@
 Change Log
 ---------------------
+__1.2.1__
+-----
+* Added Bancontact Bank code to Online banking transaction type
+* Updated Genesis PHP SDK version to 1.21.6
+
+__1.2.0__
+-----
+* Added support for 3DSv2 params through the ecomprocessing Checkout method
+* Added support for SCA Exemption settings through the ecomprocessing Checkout method
+* Added 3DSv2 parameters handling via Web Payment Form
+* Added SCA Exemption parameters handling via Web Payment Form
+* Updated Genesis PHP SDK version to 1.21.3
+* Tested up to Shopware 6.4.17.0 version
 
 __1.1.2__
 -----
