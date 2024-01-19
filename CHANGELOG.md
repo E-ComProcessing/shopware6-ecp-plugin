@@ -1,5 +1,25 @@
 Change Log
 ---------------------
+__1.2.6__
+-----
+* Updated Genesis PHP library to version 1.24.0
+* Updated support of PaySafeCard transaction type via Web Payment Form
+
+__1.2.5__
+-----
+* Added support for Blik one Click (BLK) payment method for the Online Banking payment type
+* Updated Genesis PHP SDK version to 1.22.0
+
+__1.2.4__
+-----
+* Updated Genesis PHP SDK to 1.21.11
+
+__1.2.3__
+-----
+* Updated Genesis PHP SDK to 1.21.10
+* Added Web Payment Form strict list order of the selected Transaction Types that are being sent to the Gateway
+* Tested up to __6.5.2.1__
+
 __1.2.2__
 -----
 * Added support for the latest Shopware 6.5.1.1 platform version

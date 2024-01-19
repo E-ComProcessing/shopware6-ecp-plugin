@@ -1,8 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'ecomprocessing/genesis',
-        'pretty_version' => '1.2.2',
-        'version' => '1.2.2.0',
+        'pretty_version' => '1.2.5',
+        'version' => '1.2.5.0',
         'reference' => NULL,
         'type' => 'shopware-platform-plugin',
         'install_path' => __DIR__ . '/../../',
@@ -11,8 +11,8 @@
     ),
     'versions' => array(
         'ecomprocessing/genesis' => array(
-            'pretty_version' => '1.2.2',
-            'version' => '1.2.2.0',
+            'pretty_version' => '1.2.5',
+            'version' => '1.2.5.0',
             'reference' => NULL,
             'type' => 'shopware-platform-plugin',
             'install_path' => __DIR__ . '/../../',
@@ -20,9 +20,9 @@
             'dev_requirement' => false,
         ),
         'genesisgateway/genesis_php' => array(
-            'pretty_version' => '1.21.10',
-            'version' => '1.21.10.0',
-            'reference' => '22bc66b484eb2e99a42962c4b8033dea4c050709',
+            'pretty_version' => '1.24.1',
+            'version' => '1.24.1.0',
+            'reference' => '02e28ee44f0f3f92e569ec96f6100c91a65f0936',
             'type' => 'library',
             'install_path' => __DIR__ . '/../genesisgateway/genesis_php',
             'aliases' => array(),
