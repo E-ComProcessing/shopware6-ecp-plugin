@@ -24,9 +24,9 @@ use Ecomprocessing\Genesis\Core\Payment\Transaction\TransactionEntity;
 use Ecomprocessing\Genesis\Service\Payment\Checkout;
 use Ecomprocessing\Genesis\Service\Payment\Transaction;
 use Ecomprocessing\Genesis\Utils\Mappers\Exceptions\InvalidReferenceData;
-use Genesis\API\Constants\Transaction\Names;
-use Genesis\API\Constants\Transaction\States;
-use Genesis\API\Constants\Transaction\Types;
+use Genesis\Api\Constants\Transaction\Names;
+use Genesis\Api\Constants\Transaction\States;
+use Genesis\Api\Constants\Transaction\Types;
 use Genesis\Utils\Currency;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 

@@ -33,14 +33,14 @@ use Ecomprocessing\Genesis\Utils\Config;
 use Ecomprocessing\Genesis\Utils\Mappers\PaymentData as PaymentDataMapper;
 use Ecomprocessing\Genesis\Utils\Mappers\ReferenceData as ReferenceDataMapper;
 use Ecomprocessing\Genesis\Utils\ReferenceTransactions;
-use Genesis\API\Constants\Endpoints;
-use Genesis\API\Constants\Environments;
-use Genesis\API\Constants\Payment\Methods as GenesisPproMethods;
-use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\DeliveryTimeframes;
-use Genesis\API\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories;
-use Genesis\API\Constants\Transaction\States as GenesisStates;
-use Genesis\API\Constants\Transaction\Types as GenesisTypes;
-use Genesis\API\Request\WPF\Create as GenesisWpfCreate;
+use Genesis\Api\Constants\Endpoints;
+use Genesis\Api\Constants\Environments;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\MerchantRisk\DeliveryTimeframes;
+use Genesis\Api\Constants\Transaction\Parameters\Threeds\V2\Purchase\Categories;
+use Genesis\Api\Constants\Transaction\States as GenesisStates;
+use Genesis\Api\Constants\Transaction\Types as GenesisTypes;
+use Genesis\Api\Request\Wpf\Create as GenesisWpfCreate;
+use Genesis\Api\Response as GenesisSdkResponse;
 use Genesis\Config as GenesisConfig;
 use Genesis\Exceptions\ErrorParameter as GenesisErrorParameter;
 use Genesis\Exceptions\Exception as GenesisException;
@@ -136,7 +136,6 @@ class Checkout extends Base
     }
 
     /**
-     * @throws \Genesis\Exceptions\ErrorAPI
      * @throws \Genesis\Exceptions\ErrorParameter
      * @throws \Genesis\Exceptions\InvalidArgument
      * @throws \Genesis\Exceptions\InvalidClassMethod
@@ -150,6 +149,7 @@ class Checkout extends Base
         try {
             $genesis = $this->getGenesis();
             $genesis->execute();
+
             $responseObject = $genesis->response()->getResponseObject();
 
             $this->getTransaction()->addTransactionFromRequest(
@@ -159,7 +159,7 @@ class Checkout extends Base
                 $this->getMethod()
             );
 
-            if ($responseObject->status !== GenesisStates::NEW_STATUS) {
+            if (!$genesis->response()->isNew()) {
                 $message = isset($responseObject->message) ? $responseObject->message : 'Unknown decline reason';
                 $this->getLogger()->info(
                     $message,
@@ -195,9 +195,10 @@ class Checkout extends Base
     /**
      * Execute Reference Transaction Request
      *
+     * @return GenesisSdkResponse
      * @throws InvalidGenesisRequest
      */
-    public function executeReferenceRequest(): \stdClass
+    public function executeReferenceRequest(): GenesisSdkResponse
     {
         try {
             $genesis = $this->getGenesis();
@@ -212,17 +213,15 @@ class Checkout extends Base
                 $this->getMethod()
             );
 
-            if (!in_array($responseObject->status, [GenesisStates::APPROVED, GenesisStates::PENDING_ASYNC])) {
-                $message = isset($responseObject->message) ? $responseObject->message : 'Unknown decline reason';
-                $this->getLogger()->info(
-                    $message,
-                    (array) $responseObject
-                );
+            if (!($genesis->response()->isApproved() || $genesis->response()->isPendingAsync())) {
+                $message = $responseObject->message ?? 'Unknown decline reason';
+
+                $this->getLogger()->info($message, (array) $responseObject);
 
                 throw new InvalidGenesisRequest($message);
             }
 
-            return $genesis->response()->getResponseObject();
+            return $genesis->response();
         } catch (\Exception $e) {
             $this->getLogger()->error(
                 'Genesis SDK Reference Transaction Request General Error - ' . $e->getMessage(),
@@ -239,7 +238,7 @@ class Checkout extends Base
     public function updateCapturePaymentState(
         TransactionEntity $transaction,
         string $action,
-        \stdClass $responseObject,
+        GenesisSdkResponse $responseObject,
         Context $context
     ): void {
         if (
@@ -258,15 +257,12 @@ class Checkout extends Base
             return;
         }
 
-        if (
-            $responseObject->status === GenesisStates::APPROVED ||
-            $responseObject->status === GenesisStates::PENDING_ASYNC
-        ) {
+        if ($responseObject->isApproved() || $responseObject->isPendingAsync()) {
             $this->updatePaymentState(
                 $transaction->getShopwarePaymentId(),
                 $this->getPaymentStatusByAction($action),
                 $context,
-                $responseObject->transaction_type
+                $responseObject->getResponseObject()?->transaction_type
             );
         }
     }
@@ -472,7 +468,7 @@ class Checkout extends Base
     protected function initializeInitialTransactionRequest(): Genesis
     {
         try {
-            return new Genesis('WPF\Create');
+            return new Genesis('Wpf\Create');
         } catch (GenesisException $e) {
             $this->getLogger()->error(
                 'Genesis SDK initialization - ' . $e->getMessage(),
@@ -543,6 +539,7 @@ class Checkout extends Base
                         $selectedBankCodes
                     );
                 }
+                break;
             case GenesisTypes::PAYSAFECARD:
                 $parameters = [
                     'customer_id' => $this->paymentData->getShopwareUserId()
@@ -565,14 +562,7 @@ class Checkout extends Base
             $this->getMethodConfig()[ConfigKey::CHECKOUT_TRANSACTION_TYPES]
         );
 
-        $pproSuffix = ConfigKey::PPRO_TRANSACTION_SUFFIX;
-        $methods = GenesisPproMethods::getMethods();
-
-        foreach ($methods as $method) {
-            $aliasMap[$method . $pproSuffix] = GenesisTypes::PPRO;
-        }
-
-        $aliasMap = array_merge($aliasMap, [
+        $aliasMap = [
             ConfigKey::GOOGLE_PAY_TRANSACTION_PREFIX . ConfigKey::GOOGLE_PAY_PAYMENT_TYPE_AUTHORIZE =>
                 GenesisTypes::GOOGLE_PAY,
             ConfigKey::GOOGLE_PAY_TRANSACTION_PREFIX . ConfigKey::GOOGLE_PAY_PAYMENT_TYPE_SALE      =>
@@ -587,7 +577,7 @@ class Checkout extends Base
                 GenesisTypes::APPLE_PAY,
             ConfigKey::APPLE_PAY_TRANSACTION_PREFIX . ConfigKey::APPLE_PAY_PAYMENT_TYPE_SALE        =>
                 GenesisTypes::APPLE_PAY,
-        ]);
+        ];
 
         foreach ($selectedTypes as $selectedType) {
             if (!array_key_exists($selectedType, $aliasMap)) {
@@ -605,7 +595,6 @@ class Checkout extends Base
             $processedList[$transactionType]['parameters'][] = [
                 $key => str_replace(
                     [
-                        $pproSuffix,
                         ConfigKey::GOOGLE_PAY_TRANSACTION_PREFIX,
                         ConfigKey::PAYPAL_TRANSACTION_PREFIX,
                         ConfigKey::APPLE_PAY_TRANSACTION_PREFIX,
@@ -699,7 +688,7 @@ class Checkout extends Base
      */
     protected function orderCardTransactionTypes($selectedTypes)
     {
-        $creditCardTypes = \Genesis\API\Constants\Transaction\Types::getCardTransactionTypes();
+        $creditCardTypes = GenesisTypes::getCardTransactionTypes();
 
         asort($selectedTypes);
 
@@ -718,9 +707,6 @@ class Checkout extends Base
     private function getCustomParameterKey($transactionType)
     {
         switch ($transactionType) {
-            case GenesisTypes::PPRO:
-                $result = 'payment_method';
-                break;
             case GenesisTypes::PAY_PAL:
                 $result = 'payment_type';
                 break;

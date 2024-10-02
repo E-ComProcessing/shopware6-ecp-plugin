@@ -22,7 +22,7 @@ namespace Ecomprocessing\Genesis\Service\Payment;
 use Ecomprocessing\Genesis\Core\Payment\Transaction\TransactionEntity;
 use Ecomprocessing\Genesis\Utils\Data\PaymentData;
 use Ecomprocessing\Genesis\Utils\Data\ReferenceData;
-use Genesis\API\Notification;
+use Genesis\Api\Notification;
 use Genesis\Genesis;
 use Genesis\Utils\Currency as GenesisCurrency;
 use Shopware\Core\Framework\Context;

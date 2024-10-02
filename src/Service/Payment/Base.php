@@ -26,13 +26,13 @@ use Ecomprocessing\Genesis\Utils\Config;
 use Ecomprocessing\Genesis\Utils\Data\PaymentData;
 use Ecomprocessing\Genesis\Utils\Data\ReferenceData;
 use Ecomprocessing\Genesis\Utils\Mappers\PaymentData as PaymentDataMapper;
-use Genesis\API\Constants\Transaction\Names as GenesisNames;
-use Genesis\API\Constants\Transaction\States as GenesisStates;
+use Genesis\Api\Constants\Transaction\Names as GenesisNames;
+use Genesis\Api\Constants\Transaction\States as GenesisStates;
 use Ecomprocessing\Genesis\Utils\Mappers\ReferenceData as ReferenceDataMapper;
 use Ecomprocessing\Genesis\Utils\ReferenceTransactions;
-use Genesis\API\Constants\Transaction\Types as GenesisTypes;
-use Genesis\API\Notification;
-use Genesis\API\Request\Financial\Cancel;
+use Genesis\Api\Constants\Transaction\Types as GenesisTypes;
+use Genesis\Api\Notification;
+use Genesis\Api\Request\Financial\Cancel;
 use Genesis\Config as GenesisConfig;
 use Genesis\Genesis;
 use Psr\Log\LoggerInterface;
@@ -331,12 +331,12 @@ abstract class Base
 
                 break;
             case GenesisStates::ERROR:
-            case GenesisStates::DECLINED:
                 $this->getShopwareStatusPaymentHandler()->fail($transactionId, $context);
 
                 break;
             case GenesisStates::TIMEOUT:
             case GenesisStates::VOIDED:
+            case GenesisStates::DECLINED:
                 $this->getShopwareStatusPaymentHandler()->cancel($transactionId, $context);
 
                 break;

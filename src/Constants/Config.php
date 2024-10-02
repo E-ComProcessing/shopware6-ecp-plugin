@@ -36,10 +36,7 @@ class Config
     public const CHECKOUT_THREEDS_CHALLENGE_INDICATOR = self::CHECKOUT_CONFIG_KEY . 'ThreedsChallengeIndicator';
     public const CHECKOUT_SCA_EXEMPTION               = self::CHECKOUT_CONFIG_KEY . 'ScaExemption';
     public const CHECKOUT_SCA_EXEMPTION_AMOUNT        = self::CHECKOUT_CONFIG_KEY . 'ScaExemptionAmount';
-    /**
-     * Nested Transaction Types suffix
-     */
-    public const PPRO_TRANSACTION_SUFFIX = '_ppro';
+    public const CHECKOUT_IFRAME_PROCESSING           = self::CHECKOUT_CONFIG_KEY . 'IframeProcessing';
 
     /**
      * Google Pay Transaction Prefix and Types
@@ -79,7 +76,8 @@ class Config
             self::CHECKOUT_THREEDS_ALLOWED,
             self::CHECKOUT_THREEDS_CHALLENGE_INDICATOR,
             self::CHECKOUT_SCA_EXEMPTION,
-            self::CHECKOUT_SCA_EXEMPTION_AMOUNT
+            self::CHECKOUT_SCA_EXEMPTION_AMOUNT,
+            self::CHECKOUT_IFRAME_PROCESSING,
         ];
     }
 }

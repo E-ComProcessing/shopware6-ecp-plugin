@@ -1,5 +1,39 @@
 Change Log
 ---------------------
+__1.3.3__
+-----
+* Updated Genesis PHP SDK to version 2.0.2
+* Updated transaction types list in the ecomprocessing Checkout payment method
+* Added the following bank codes support through Online Banking transaction type:
+  * LatiPay
+  * SPEI
+
+__1.3.2__
+-----
+* Updated Genesis PHP SDK to version 2.0.1
+* Added P24 transaction type support
+* Removed GiroPay transaction type from the Checkout payment method
+* Updated transaction types list in the ecomprocessing Checkout payment method
+
+__1.3.1__
+-----
+Fixed Genesis PHP SDK directory structure
+
+__1.3.0__
+-----
+* Added Shopware 6.6.x support
+* Dropped support for Shopware 6.5 due to Shopware 6.6.x platform architecture changes
+* Update Genesis PHP SDK to version 2.0.0
+* Added Order finalization handling in the payment method
+* Fixed IPN handling during Web Payment Form cancellation
+* Fixed LoggerFactory implementation to suit Shopware 6.6 platform requirements
+* Fixed 3DSv2 parameters handling
+
+__1.2.7__
+-----
+* Updated Genesis PHP SDK to version 1.24.6
+* Implemented Web Payment Form flow with an iFrame
+
 __1.2.6__
 -----
 * Updated Genesis PHP library to version 1.24.0

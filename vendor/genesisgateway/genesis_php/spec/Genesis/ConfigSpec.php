@@ -2,8 +2,11 @@
 
 namespace spec\Genesis;
 
+use Genesis\Api\Constants\Endpoints;
+use Genesis\Api\Constants\Environments;
+use Genesis\Config;
+use Genesis\Exceptions\InvalidArgument;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class ConfigSpec extends ObjectBehavior
 {
@@ -15,26 +18,26 @@ class ConfigSpec extends ObjectBehavior
     public function it_should_have_default_environment_sandbox()
     {
         $this::getEnvironment()->shouldBe(
-            \Genesis\API\Constants\Environments::STAGING
+            \Genesis\Api\Constants\Environments::STAGING
         );
     }
 
     public function it_should_set_environment()
     {
         $this::setEnvironment(
-            \Genesis\API\Constants\Environments::STAGING
+            \Genesis\Api\Constants\Environments::STAGING
         );
 
         $this::getEnvironment()->shouldBe(
-            \Genesis\API\Constants\Environments::STAGING
+            \Genesis\Api\Constants\Environments::STAGING
         );
 
         $this::setEnvironment(
-            \Genesis\API\Constants\Environments::PRODUCTION
+            \Genesis\Api\Constants\Environments::PRODUCTION
         );
 
         $this::getEnvironment()->shouldBe(
-            \Genesis\API\Constants\Environments::PRODUCTION
+            \Genesis\Api\Constants\Environments::PRODUCTION
         );
     }
 
@@ -43,37 +46,37 @@ class ConfigSpec extends ObjectBehavior
         $this::setEnvironment('live');
 
         $this::getEnvironment()->shouldBe(
-            \Genesis\API\Constants\Environments::PRODUCTION
+            \Genesis\Api\Constants\Environments::PRODUCTION
         );
 
         $this::setEnvironment('prod');
 
         $this::getEnvironment()->shouldBe(
-            \Genesis\API\Constants\Environments::PRODUCTION
+            \Genesis\Api\Constants\Environments::PRODUCTION
         );
 
         $this::setEnvironment('production');
 
         $this::getEnvironment()->shouldBe(
-            \Genesis\API\Constants\Environments::PRODUCTION
+            \Genesis\Api\Constants\Environments::PRODUCTION
         );
 
         $this::setEnvironment('test');
 
         $this::getEnvironment()->shouldBe(
-            \Genesis\API\Constants\Environments::STAGING
+            \Genesis\Api\Constants\Environments::STAGING
         );
 
         $this::setEnvironment('testing');
 
         $this::getEnvironment()->shouldBe(
-            \Genesis\API\Constants\Environments::STAGING
+            \Genesis\Api\Constants\Environments::STAGING
         );
 
         $this::setEnvironment('staging');
 
         $this::getEnvironment()->shouldBe(
-            \Genesis\API\Constants\Environments::STAGING
+            \Genesis\Api\Constants\Environments::STAGING
         );
     }
 
@@ -104,16 +107,16 @@ class ConfigSpec extends ObjectBehavior
 
     public function it_should_set_endpoint()
     {
-        $this::setEndpoint(\Genesis\API\Constants\Endpoints::ECOMPROCESSING);
+        $this::setEndpoint(\Genesis\Api\Constants\Endpoints::ECOMPROCESSING);
 
         $this::getEndpoint()->shouldBe(
-            \Genesis\API\Constants\Endpoints::ECOMPROCESSING
+            \Genesis\Api\Constants\Endpoints::ECOMPROCESSING
         );
 
-        $this::setEndpoint(\Genesis\API\Constants\Endpoints::EMERCHANTPAY);
+        $this::setEndpoint(\Genesis\Api\Constants\Endpoints::EMERCHANTPAY);
 
         $this::getEndpoint()->shouldBe(
-            \Genesis\API\Constants\Endpoints::EMERCHANTPAY
+            \Genesis\Api\Constants\Endpoints::EMERCHANTPAY
         );
     }
 
@@ -122,37 +125,37 @@ class ConfigSpec extends ObjectBehavior
         $this::setEndpoint('ecp');
 
         $this::getEndpoint()->shouldBe(
-            \Genesis\API\Constants\Endpoints::ECOMPROCESSING
+            \Genesis\Api\Constants\Endpoints::ECOMPROCESSING
         );
 
         $this::setEndpoint('e-comprocessing');
 
         $this::getEndpoint()->shouldBe(
-            \Genesis\API\Constants\Endpoints::ECOMPROCESSING
+            \Genesis\Api\Constants\Endpoints::ECOMPROCESSING
         );
 
         $this::setEndpoint('www.e-comprocessing.com');
 
         $this::getEndpoint()->shouldBe(
-            \Genesis\API\Constants\Endpoints::ECOMPROCESSING
+            \Genesis\Api\Constants\Endpoints::ECOMPROCESSING
         );
 
         $this::setEndpoint('emp');
 
         $this::getEndpoint()->shouldBe(
-            \Genesis\API\Constants\Endpoints::EMERCHANTPAY
+            \Genesis\Api\Constants\Endpoints::EMERCHANTPAY
         );
 
         $this::setEndpoint('emerchantpay');
 
         $this::getEndpoint()->shouldBe(
-            \Genesis\API\Constants\Endpoints::EMERCHANTPAY
+            \Genesis\Api\Constants\Endpoints::EMERCHANTPAY
         );
 
         $this::setEndpoint('www.emerchantpay.com');
 
         $this::getEndpoint()->shouldBe(
-            \Genesis\API\Constants\Endpoints::EMERCHANTPAY
+            \Genesis\Api\Constants\Endpoints::EMERCHANTPAY
         );
     }
 
@@ -203,17 +206,93 @@ class ConfigSpec extends ObjectBehavior
         $this::setInterface('network', 'curl');
     }
 
+    public function it_should_have_default_force_smart_routing()
+    {
+        $this->shouldHaveDefaultSmartRouting();
+    }
+
+    public function it_should_set_force_smart_routing()
+    {
+        $this::setForceSmartRouting(false)->shouldBe(false);
+    }
+
+    public function it_should_get_force_smart_routing()
+    {
+        $this->getWrappedObject()::setForceSmartRouting(true);
+
+        $this->shouldHaveEnabledSmartRouting();
+    }
+
+    public function it_has_staging_smart_router_subdomain()
+    {
+        $this::setEnvironment('staging');
+
+        $this::getSubDomain('api_service')->shouldBe('staging.api.');
+    }
+
+    public function it_has_production_smart_router_subdomain()
+    {
+        $this::setEnvironment('prod');
+
+        $this::getSubDomain('api_service')->shouldBe('prod.api.');
+    }
+
+    public function it_should_fail_when_invalid_settings_file()
+    {
+        $this->shouldThrow(InvalidArgument::class)->during('loadSettings', ['invalid_path']);
+    }
+
+    public function it_should_fail_when_invalid_setting_with_ini_file()
+    {
+        $settings_sample = dirname(dirname(__DIR__)) . '/settings_sample.ini';
+
+        $this->shouldThrow(InvalidArgument::class)
+            ->during('loadSettings', [$settings_sample]);
+    }
+
+    public function it_should_load_settings_with_ini_file()
+    {
+        $settings_fixture = dirname(__DIR__) . '/Fixtures/settings.ini';
+
+        $this::loadSettings($settings_fixture);
+
+        $this::getEndpoint()->shouldBe(Endpoints::EMERCHANTPAY);
+        $this::getEnvironment()->shouldBe(Environments::STAGING);
+        $this->shouldHaveDefaultSmartRouting();
+        $this->shouldHaveDefaultUsername();
+        $this->shouldHaveDefaultPassword();
+        $this->shouldHaveDefaultToken();
+        $this::getInterface('network')->shouldBe('curl');
+        $this::getInterface('builder')->shouldBe('xml');
+    }
+
     public function getMatchers(): array
     {
         return array(
-            'beEmpty'       => function ($subject) {
+            'beEmpty'                 => function ($subject) {
                 return filesize($subject) < 1;
             },
-            'beReadable'    => function ($subject) {
+            'beReadable'              => function ($subject) {
                 return is_readable($subject);
             },
-            'exist'         => function ($subject) {
+            'exist'                   => function ($subject) {
                 return file_exists($subject);
+            },
+            'haveDefaultSmartRouting' => function () {
+                return array_key_exists('force_smart_routing', Config::$vault) &&
+                    Config::$vault['force_smart_routing'] === false;
+            },
+            'haveEnabledSmartRouting' => function() {
+                return Config::getForceSmartRouting() === true;
+            },
+            'haveDefaultUsername'     => function() {
+                return Config::getUsername() === 'ENTER_YOUR_USERNAME';
+            },
+            'haveDefaultPassword'     => function() {
+                return Config::getPassword() === 'ENTER_YOUR_PASSWORD';
+            },
+            'haveDefaultToken'        => function() {
+                return Config::getToken() === 'ENTER_YOUR_TOKEN';
             }
         );
     }

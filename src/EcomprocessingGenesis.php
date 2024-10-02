@@ -19,19 +19,44 @@
 namespace Ecomprocessing\Genesis;
 
 use Ecomprocessing\Genesis\Service\CheckoutPayment;
+use Ecomprocessing\Genesis\Service\PaymentMethodService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Util\PluginIdProvider;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Config\Loader\DelegatingLoader;
+use Symfony\Component\Config\Loader\LoaderResolver;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\DirectoryLoader;
+use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class EcomprocessingGenesis extends Plugin
 {
+    public function build(ContainerBuilder $container): void
+    {
+        parent::build($container);
+
+        $locator = new FileLocator('Resources/config');
+
+        $resolver = new LoaderResolver([
+            new YamlFileLoader($container, $locator),
+            new GlobFileLoader($container, $locator),
+            new DirectoryLoader($container, $locator),
+        ]);
+
+        $configLoader = new DelegatingLoader($resolver);
+
+        $confDir = rtrim($this->getPath(), '/') . '/Resources/config';
+
+        $configLoader->load($confDir . '/{packages}/*.yaml', 'glob');
+    }
+
     public function install(InstallContext $context): void
     {
         $this->addPaymentMethod($context->getContext());
@@ -102,14 +127,17 @@ class EcomprocessingGenesis extends Plugin
         $paymentRepository->update([$paymentMethod], $context);
     }
 
+    /**
+     * Retrieves the payment method ID from the database
+     *
+     * @return string|null
+     */
     private function getPaymentMethodId(): ?string
     {
         /** @var EntityRepository $paymentRepository */
         $paymentRepository = $this->container->get('payment_method.repository');
+        $paymentMethodService = new PaymentMethodService($paymentRepository);
 
-        // Fetch ID for update
-        $paymentCriteria = (new Criteria())->addFilter(new EqualsFilter('handlerIdentifier', CheckoutPayment::class));
-
-        return $paymentRepository->searchIds($paymentCriteria, Context::createDefaultContext())->firstId();
+        return $paymentMethodService->getPaymentMethodId();
     }
 }

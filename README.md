@@ -1,14 +1,16 @@
 E-Comprocessing Gateway Module for Shopware 6
 =============================
 
+[![Software License](https://img.shields.io/badge/license-GPL-green.svg?style=flat)](LICENSE)
+
 This is a Payment Plugin for Shopware 6, that gives you the ability to process payments through E-Comprocessing's Payment Gateway - Genesis.
 
 Requirements
 ------------
 
-* Shopware 6.4.20, 6.5.x (Tested up to __6.4.20__, __6.5.7.3__)
-* [GenesisPHP v1.24.1](https://github.com/GenesisGateway/genesis_php/releases/tag/1.24.1)
-* [Composer v2.5.5](https://github.com/composer/composer/releases/tag/2.5.5)
+* Shopware 6.6.x (Tested up to __6.6.5.1__)
+* [GenesisPHP v2.0.2](https://github.com/GenesisGateway/genesis_php/releases/tag/2.0.2)
+* [Composer v2.6.0](https://github.com/composer/composer/releases/tag/2.6.0)
 
 GenesisPHP Requirements
 ------------
@@ -69,6 +71,33 @@ Configuration
 * Navigate to section `Payment and shipping`
 * Add Payment Methods `ecomprocessing Checkout`
 
+**Note**: In order to use processing in an iframe, you have to modify the SameSite cookie settings. This ensures that cookies are properly handled during cross-site requests, which is crucial for iframe-based payment solutions.
+
+### Step 1: Add/edit your framework.yml file
+Ensure you have access to your Shopware 6 installation directory. This can be on your local machine or a server where your Shopware instance is hosted.
+
+Navigate to the config/packages directory within your Shopware installation. This directory contains configuration files for various packages used by Shopware.
+
+```shell
+nano /path/to/your/shopware/installation/config/packages/framework.yml
+```
+**Note** instead of `nano` you can use your favorite editor.
+
+Add/update the Cookie SameSite setting:
+
+**framework.yml**:
+```yaml
+framework:
+  session:
+    cookie_samesite: none
+```
+
+Save your changes and clear the cache:
+```sh
+cd /path/to/your/shopware/installation
+./bin/console cache:clear
+```
+
 Uninstall \*CAUTION\*
 ---------------------
 When uninstalling, a message will appear asking if the plug-in data needs to be removed:
@@ -79,8 +108,6 @@ Supported Transactions
 ---------------------
 * ```E-Comprocessing Checkout``` Payment Method
   * __Alternative Payment Methods__
-    * __PPRO__
-      * __iDEAL__
     * __SOFORT__
   * __Cash Payments__
     * __Pix__
@@ -93,12 +120,14 @@ Supported Transactions
   * __Sepa Direct Debit__
     * __SDD Sale__
   * __Online Banking Payments__
-    * __Bancontact__
-    * __GiroPay__
+    * __Bancontact (BCT)__
     * __iDEAL__
     * __iDebit Payin__
-    * __Interac Combined Pay-in__
-    * __Blik One Click (BLK)__
+    * __Interac Combined Pay-in (CPI)__
+    * __BLIK (BLK)__
+    * __P24__
+    * __SPEI (SE)__
+    * __LatiPay (PID)__
   * __Mobile__
     * __Apple Pay__
     * __Google Pay__
@@ -111,5 +140,27 @@ _Note_: If you have trouble with your credentials or terminal configuration, get
 
 You're now ready to process payments through our gateway.
 
-[support]: mailto:tech-support@e-comprocessing.com
+Development
+------------
+* Install with development packages
+```shell
+composer install
+```
+* Install without development packages
+```shell
+composer build
+```
+* Run PHP Code Sniffer
+```shell
+composer php-cs
+```
+* Run PHP Mess Detector
+```shell
+composer php-md
+```
+* Pack installation archive (Linux or macOS only)
+```shell
+composer pack
+```
 
+[support]: mailto:tech-support@e-comprocessing.com
