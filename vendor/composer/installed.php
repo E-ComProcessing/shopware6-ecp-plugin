@@ -1,8 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'ecomprocessing/genesis',
-        'pretty_version' => '1.3.3',
-        'version' => '1.3.3.0',
+        'pretty_version' => '1.4.0',
+        'version' => '1.4.0.0',
         'reference' => NULL,
         'type' => 'shopware-platform-plugin',
         'install_path' => __DIR__ . '/../../',
@@ -11,8 +11,8 @@
     ),
     'versions' => array(
         'ecomprocessing/genesis' => array(
-            'pretty_version' => '1.3.3',
-            'version' => '1.3.3.0',
+            'pretty_version' => '1.4.0',
+            'version' => '1.4.0.0',
             'reference' => NULL,
             'type' => 'shopware-platform-plugin',
             'install_path' => __DIR__ . '/../../',

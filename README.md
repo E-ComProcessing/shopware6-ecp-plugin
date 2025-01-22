@@ -1,3 +1,5 @@
+\*CAUTION\* The e-comprocessing Gateway Module Plugin for Shopware 6 is deprecated and will no longer receive updates.
+=============================
 E-Comprocessing Gateway Module for Shopware 6
 =============================
 

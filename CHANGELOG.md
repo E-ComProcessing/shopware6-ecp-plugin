@@ -1,5 +1,9 @@
 Change Log
 ---------------------
+__1.4.0__
+-----
+* Deprecated e-comprocessing Gateway Module for Shopware 6
+
 __1.3.3__
 -----
 * Updated Genesis PHP SDK to version 2.0.2
